@@ -1,0 +1,93 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### Introduction  
+Bacterial vaginosis(BV) is a condition where the vaginal microbiome characterized by low levels of Lactobacilli and abundance of diverse anaerobes. BV is associated with increased risk of sexually transmitted diseases (Schmid 2000) and preterm birth(Menard 2010). Symptoms for BV diagnosis include high vaginal pH, fishy odor, and shedded epithelial cells covered in bacteria in Amsel scoring in clinical settings; however, BV can also appear asymptomatically when determined through Nugent scoring, a method of microscopic examination of vaginal smears used to charcterize BV in research studies(O'Hanlon 2010).
+
+Gardnerella vaginalis is a facultative anaerobic bacteria commonly isolated from women with symptomatic and asymptomatic BV (Yeoman 2010). Gardnerella strains ATCC10418 and ATCC14019 have been isolated from women with symptomatic BV (Gardner and Dukes 1955) while strain 409-05 was isolated from a woman with asymptomatic BV through Nugent scoring (Kim 2009). The strain 409-05 was found to share less than 80% amino acid sequence identity with 46% and 47% of orthologous genes with strains ATCC14018 and ATCC14019 (Yeoman 2010).
+
+One of orthologous genes in the genomes of strains ATCC14018, ATCC14019, and 409-05, is vaginolysin(vly), an athiol-activated cholesterol-dependent cytolysin (Yeoman 2010). In the presence of Gardnerella vaginalis supernatants with vaginolysin, epithelial cells initiate cellular blebbing, a phenomenon associated with cell death (Randia 2013). Symptomatic BV was associated with increased epithelial cell shedding while asymptomatic BV appeared to have decreased epithelial cell shedding (O'Hanlon 2010).
+
+This leads to the question:  
+
+**Scientific Question:** Are there structural/functional differences in the vaginolysin protein in Gardnerella strains ATCC14018 and ATCC14019 from women with symptomatic bacterial vaginosis (BV) and strain 409-05 from women with asymptomatic BV that impact the outcome of disease pathogenesis? 
+
+**Scientific Hypothesis:** If the vaginolysin protein sequence between strains ATCC14018 and ATCC14019 in comparison to strain 409-05 shares less than a 80% sequence identity, then there are structural/functional differences in the vaginolysin protein in Gardnerella strains from women with symptomatic bacterial vaginosis and from women with asymptomatic bacterial vaginosis.  
+
+Here, multiple sequence alignment is used to compare sequences of the vaginolysin proteins for strains ATCC14018, ATCC14019, and 409-05. The multiple sequence alignment is visualized with a sequence logo. Protein homology modeling is used to infer the structure of the vaginolysin proteins, and Bio3D is used to visually identify differences in the structures between the proteins.
+
+#### Data for the analysis was downloaded from the following links:
+Gardnerella vaginalis strain ATCC14018
+DNA: https://www.ncbi.nlm.nih.gov/nuccore/EU522486.1  
+Amino acids: https://www.ncbi.nlm.nih.gov/protein/ACD39459.1?report=fasta
+
+Gardnerella vaginalis strain ATCC14019
+DNA: https://www.ncbi.nlm.nih.gov/nuccore/EU522487.1  
+Amino acids: https://www.ncbi.nlm.nih.gov/protein/ACD39460.1?report=fasta
+
+Gardnerella vaginalis strain 409-05  
+Can't find a link for the 409-05 vaginolysin gene on NCBI 
+whole genome DNA: https://www.ncbi.nlm.nih.gov/nuccore/NC_013721.1  
+DNA and Amino acids: https://www.genome.jp/entry/gva:HMPREF0424_0103  
+
+
+### Package Descriptions  
+The code for loading and installing in the packages is provided below.
+1. Bioconductor: an R package that needs to be installed before using the following packages. It is used for analyzing and processing high-throughput biological data  
+2. Biostrings: used for storing, matching, and manipulating DNA, RNA, and amino acid sequences  
+3. seqinr: used to read in and visualize fasta files that contain DNA, RNA, and amino acid sequences  
+4. msa: a package containing multiple sequence alignment algorithms of ClustalW, ClustalOmega, and Muscle  
+
+```{r}
+#Load in Bioconductor/BiocManager before beginning loading any of the other packages
+library(BiocManager)
+library(Biostrings)
+library(seqinr)
+library(msa)
+#no packages needed to be loaded in for protein homology modeling
+```
+
+### Bioinformatics Analyses  
+#### Loading in data from links above  
+```{r}
+#defining global variables
+#loading in fasta file with Amino Acid sequences as an AAStringSet or S4
+vly_aa <- readAAStringSet("vaginolysin_AA.txt")
+vly_aa
+# Check what the datatype is
+#typeof(vly_aa)
+
+#loading in fasta file with DNA sequences
+
+#---------------------------------------------------
+#defining local variables
+#I don't fully know if I am using any local variables
+```
+
+#### Multiple Sequence Alignment  
+Multiple sequence alignment is the alignment of three of more sequences of DNA, RNA, or amino acids to determine which locations in the sequence have mutations. The input for the msa function should be an S4 AAstringset variable, and the output should be the amino acid sequence of the 3 strains as well as a consensus sequence. The output of the msa function does not color in the differing amino acids.
+```{r}
+#multiple sequence alignment
+vly_msa <- msa(vly_aa)
+
+#print out the multiple sequence alignment
+print(vly_msa, show = "complete")
+```
+
+#### Visualizing MSA with Sequence Logos  
+Sequence logos show how conserved certain nuclotides are in a sequence. The bigger the height of the letter on the y-axis, the more conserved it is in the sequence. 
+```{r}
+#ok so I realized that I'm trying to make a sequence logo with amino acids rather than nucleotides
+#are sequence logos with amino acids a thing?
+```
+
+#### Protein Homology Model  
+Protein homology modeling uses a protein whose structure has been solved with X-ray crystallography or cryo-EM to infer the structure of a protein that has not been solved yet. The solved structure is used as a template to which the protein of unknown structure can be aligned to. 
+```{r}
+#Protein homology modeling appears to be done in SWISS-MODEL and can be uploaded to GitHub
+```
+
+### Results Analysis  
+I really can't analyze my results since I haven't been able to visualize them.
