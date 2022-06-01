@@ -10,17 +10,17 @@ Files in this repository:
 
 ## Data for the analysis was downloaded from the following links:  
 *Gardnerella vaginalis* strain ATCC14018   
-[ATCC14018 DNA](https://www.ncbi.nlm.nih.gov/nuccore/EU522486.1)
-[ATCC14018 amino acids](https://www.ncbi.nlm.nih.gov/protein/ACD39459.1?report=fasta)
+[ATCC14018 DNA](https://www.ncbi.nlm.nih.gov/nuccore/EU522486.1)  
+[ATCC14018 amino acids](https://www.ncbi.nlm.nih.gov/protein/ACD39459.1?report=fasta)  
 
-*Gardnerella vaginalis* strain ATCC14019 
-[ATCC14019 DNA](https://www.ncbi.nlm.nih.gov/nuccore/EU522487.1)
-[ATCC14019 amino acids](https://www.ncbi.nlm.nih.gov/protein/ACD39460.1?report=fasta)
+*Gardnerella vaginalis* strain ATCC14019   
+[ATCC14019 DNA](https://www.ncbi.nlm.nih.gov/nuccore/EU522487.1)  
+[ATCC14019 amino acids](https://www.ncbi.nlm.nih.gov/protein/ACD39460.1?report=fasta)  
 
-*Gardnerella vaginalis* strain 409-05
-Can’t find a link for the 409-05 vaginolysin gene on NCBI
-[409-05 whole genome DNA](https://www.ncbi.nlm.nih.gov/nuccore/NC_013721.1)
-[409-05 DNA and amino acids](https://www.genome.jp/entry/gva:HMPREF0424_0103)
+*Gardnerella vaginalis* strain 409-05  
+Can’t find a link for the 409-05 vaginolysin gene on NCBI  
+[409-05 whole genome DNA](https://www.ncbi.nlm.nih.gov/nuccore/NC_013721.1)  
+[409-05 DNA and amino acids](https://www.genome.jp/entry/gva:HMPREF0424_0103)  
 
 Scientific Question: Are there structural/functional differences in the vaginolysin protein in Gardnerella strains ATCC14018 and ATCC14019 from women with symptomatic bacterial vaginosis (BV) and strain 409-05 from women with asymptomatic BV that impact the outcome of disease pathogenesis?  
 
