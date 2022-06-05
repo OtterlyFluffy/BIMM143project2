@@ -1,6 +1,6 @@
 # BIMM143project2
 
-Hi! This is the first draft of Hillary's Project 2 for BIMM143.  
+Hi! This is the Hillary's Project 2 for BIMM143.  
 
 Files in this repository:  
 1. Project 2 R Notebook - this file contains the code to run the experiment
