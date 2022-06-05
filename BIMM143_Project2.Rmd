@@ -1,0 +1,174 @@
+---
+title: "Hillary's Project 2 R Notebook"
+output: html_notebook
+---
+
+### Introduction  
+Bacterial vaginosis(BV) is a condition where the vaginal microbiome characterized by low levels of *Lactobacilli* and abundance of diverse anaerobes. BV is associated with increased risk of sexually transmitted diseases (Schmid 2000) and preterm birth (Menard 2010). Symptoms for BV diagnosis include high vaginal pH, fishy odor, and shedded epithelial cells covered in bacteria in Amsel scoring in clinical settings; however, BV can also appear asymptomatically when determined through Nugent scoring, a method of microscopic examination of vaginal smears used to charcterize BV in research studies (O'Hanlon 2010).
+
+*Gardnerella vaginalis* is a facultative anaerobic bacteria commonly isolated from women with symptomatic and asymptomatic BV (Yeoman 2010). *Gardnerella* strains ATCC10418 and ATCC14019 have been isolated from women with symptomatic BV (Gardner and Dukes 1955) while strain 409-05 was isolated from a woman with asymptomatic BV through Nugent scoring (Kim 2009). The strain 409-05 was found to share less than 80% amino acid sequence identity with 46% and 47% of orthologous genes with strains ATCC14018 and ATCC14019 (Yeoman 2010).
+
+One of orthologous genes in the genomes of strains ATCC14018, ATCC14019, and 409-05, is vaginolysin(vly), an athiol-activated cholesterol-dependent cytolysin (Yeoman 2010). In the presence of Gardnerella vaginalis supernatants with vaginolysin, epithelial cells initiate cellular blebbing, a phenomenon associated with cell death (Randia 2013). Symptomatic BV was associated with increased epithelial cell shedding while asymptomatic BV appeared to have decreased epithelial cell shedding (O'Hanlon 2010).
+
+This leads to the question:  
+
+**Scientific Question:** Are there structural/functional differences in the vaginolysin protein in Gardnerella strains ATCC14018 and ATCC14019 from women with symptomatic bacterial vaginosis (BV) and strain 409-05 from women with asymptomatic BV that impact the outcome of disease pathogenesis? 
+
+**Scientific Hypothesis:** If the orthologous vaginolysin protein sequence between strains ATCC14018 and ATCC14019 in comparison to strain 409-05 shares less than a 80% sequence identity, then there are structural/functional differences in the vaginolysin protein in *Gardnerella* strains from women with symptomatic bacterial vaginosis and from women with asymptomatic bacterial vaginosis.  
+
+Here, multiple sequence alignment is used to compare sequences of the vaginolysin proteins for strains ATCC14018, ATCC14019, and 409-05. The multiple sequence alignment is visualized with a sequence logo. Protein homology modeling is used to infer the structure of the vaginolysin proteins, and normal modes analysis(NMA) is used to identify differences in the functional motions and structures between the proteins.
+
+#### Data for the analysis was downloaded from the following links:
+Gardnerella vaginalis strain ATCC14018  
+Amino acids: https://www.ncbi.nlm.nih.gov/protein/ACD39459.1?report=fasta  
+
+Gardnerella vaginalis strain ATCC14019  
+Amino acids: https://www.ncbi.nlm.nih.gov/protein/ACD39460.1?report=fasta  
+
+Gardnerella vaginalis strain 409-05    
+Can't find a link for the 409-05 vaginolysin gene on NCBI   
+DNA and Amino acids: https://www.genome.jp/entry/gva:HMPREF0424_0103    
+
+Intermedilysin pdb file used to infer the structure of vaginolysin proteins:
+https://www.rcsb.org/structure/1s3r
+
+
+### Package Descriptions   
+The code for loading and installing in the packages is provided below.  
+1. Bioconductor: an R package that needs to be installed before using the following packages. It is used for analyzing and processing high-throughput biological data    
+2. Biostrings: used for storing, matching, and manipulating DNA, RNA, and amino acid sequences  
+3. seqinr: used to read in and visualize fasta files that contain DNA, RNA, and amino acid sequences  
+4. msa: a package containing multiple sequence alignment algorithms of ClustalW, ClustalOmega, and Muscle  
+5. ggplot2: convenient data visualization package for making graphs  
+6. ggseqlogo: package extention of ggplot2 that allows for the creation of both nucleotide and amino acid sequence logos  
+7. NGLVieweR: used for the visualization of proteins, DNA, and RNA on the web, also for html  
+8. dplyr: a package for easy dataframe manipulation and the forward pipe function %>%  
+9. bio3d: used for 3D protein structure analysis, alignment, and processing protein sequence + structure data  
+```{r}
+#Load in Bioconductor/BiocManager before beginning loading any of the other packages
+#if you do not have the following packages, make sure to install them before loading
+library(BiocManager)
+library(Biostrings)
+library(seqinr)
+library(msa)
+library(ggplot2)
+library(ggseqlogo)
+library(NGLVieweR) 
+library(dplyr) 
+library(bio3d)
+```
+
+### Bioinformatics Analyses  
+#### Loading in data from links above  
+```{r}
+#defining global variables
+
+#names is a vector containing the names for the three pdb files of the vaginolysin proteins that were constructed using protein homology in SWISS-MODEL
+#vly_14018 is the pdb file for the vaginolysin protein from Gardnerella vaginalis ATCC14018 inferred from intermedilysin
+#vly_14019 is the pdb file for the vaginolysin protein from Gardnerella vaginalis ATCC14019 inferred from intermedilysin
+#vly_40905 is the pdb file for the vaginolysin protein from Gardnerella vaginalis 409-05 inferred from intermedilysin
+#vly_pdb is the a list with all 3 of the pdb files inferred from intermedilysin
+
+#loading in fasta file with Amino Acid sequences as an AAStringSet or S4
+vly_aa <- readAAStringSet("vaginolysin_AA.txt")
+vly_aa
+
+#vlyAA_msa is the multiple sequence alignment of the three vaginolysin proteins. Its class is a MsaAAMultipleSequenceAlignment
+#vly_aa_short is the sequence of amino acids of the vaginolysin proteins from positions 300 to 322
+#vly_consensus is a distance matrix of the similarities between the amino acids of the vaginolysin proteins from positions 300 to 322
+
+#local variable
+#x is a local variable in the function vis_3D, used for the construction of an interactive web-based 3D structure of proteins
+```
+
+#### Protein Homology Model  
+Protein homology modeling uses a protein whose structure has been solved with X-ray crystallography or cryo-EM to infer the structure of a protein that has not been solved yet. The solved structure is used as a template to which the protein of unknown structure can be aligned to. 
+
+This analysis will compare differing residues between the 300 to 322 region of the vaginolysin protein from the Gardnerella vaginalis strains. The vaginolysin protein is not well annotated but from visual comparison of the vaginolysin protein to the intermedilysin protein + CD59 receptor, the 300 to 323 region appears to be in close proximity with the human CD59 receptor.
+
+```{r}
+#Protein homology modeling was done in SWISS-MODEL and is uploaded to GitHub
+#The structure of amino acid sequences from the Gardnerella strains above were inferred using intermedilysin, a bacterial pore forming toxin which has a similar mechanism to vaginolysin. They both require cholesterol and the human CD59 receptor to form pores.
+
+#Protein Data Bank entry intermedilysin 1S3R was used as the backbone for modeling the vaginolysin protein. All vaginolysin amino acid sequences shared around 59% sequence identity with intermedilysin 1S3R.
+
+#vector of file names
+names <- c("14018vly_fromily.pdb", "14019vly_fromily.pdb", "409_05vly_fromily.pdb")
+
+#function to visualize 3D structure
+vis_3D <- function(x){
+  print(NGLVieweR(x) %>%
+  addRepresentation("cartoon",
+    param = list(colorScheme = "residueindex")
+  ) %>%
+  addRepresentation("ball+stick",
+    param = list(
+      sele = "233-248",
+      colorValue = "red",
+      colorScheme = "element"
+    )
+  ) 
+  )
+}
+
+#for loop to visualize the protein structure itself
+for(i in 1:length(names)){
+  vis_3D(names[i])
+}
+
+```
+#### Normal modes analysis (NMA)  
+Normal modes analysis allows for the analysis of protein flexibility and shape changing. The normal modes at each alignment position can be plotted to identify which positions have the largest fluctuation. The positions of the largest fluctuation can be assumed to have functional relevance.
+```{r}
+#upload pdb files and make list of the files
+vly_14018 <- read.pdb("14018vly_fromily.pdb")
+vly_14019 <- read.pdb("14019vly_fromily.pdb")
+vly_40905 <- read.pdb("409_05vly_fromily.pdb")
+
+vly_pdb <- list(vly_14018, vly_14019, vly_40905)
+  
+#align the pdb files before beginning nma analysis
+pdbs <- pdbaln(vly_pdb, fit = FALSE, pqr = FALSE, ncore = 1, nseg.scale = 1, web.args=list(email='test@gmail.com'))
+
+#comparing normal modes of aligned structures
+nma <- nma(pdbs)
+
+#visualize the nma by graphing
+plot(nma)
+
+#nma analysis says that there might be something interesting around 450 
+```
+#### Multiple Sequence Alignment  
+Multiple sequence alignment is the alignment of three of more sequences of DNA, RNA, or amino acids to determine which locations in the sequence have mutations. Since I am looking at the amino acid sequences of the vaginolysin proteins, the input for the msa function should be an S4 AAStringSet variable, and the output should be the amino acid sequence of the 3 strains as well as a consensus sequence. The output of the msa function does not color in each amino acid.   
+The default alignment algorithm for the msa function is ClustalW, which calculates alignment scores for the sequences, chooses the sequences with the best score, and aligns those first. It first creates a pairwise sequence alignment, then uses neighbor joining to cluster and make phylogenetic trees. The tree is then used to make the alignment.
+```{r}
+#Code for AA multiple sequence alignment
+#AA multiple sequence alignment
+vlyAA_msa <- msa(vly_aa)
+
+#print out the AAmultiple sequence alignment
+print(vlyAA_msa, show = "complete")
+
+```
+
+#### Visualizing MSA with Sequence Logos  
+Sequence logos show how conserved certain nucleotides/amino acids are in a sequence. In this analysis, the x-axis of the graph displays the position of the nucleotide/amino acid sequence. The bigger the height of the letter on the y-axis, the more conserved it is in the sequence. 
+```{r}
+#use substring() to trim the amino acid sequence
+#source code from:https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/substr
+vly_aa_short<- substring(vly_aa, 300, 322)
+
+#making consensus matrix to see what amino acid is at each position
+#source code: https://www.rdocumentation.org/packages/Biostrings/versions/2.40.2/topics/letterFrequency
+vly_consensus <- consensusMatrix(vly_aa_short)
+#checking the consensus matrix
+head(vly_consensus)
+
+#using ggseqlogo to make the sequence logo of amino acids from 300 to 322 of the vaginolysin msa
+#https://medium.com/@omarwagih/creating-publication-ready-sequence-logos-in-r-785d747f550d
+ggplot() + geom_logo(vly_consensus) + theme_logo() + labs( title = "Vaginolysin Amino Acids for position 300 to 322", x = "Position")
+
+```
+
+### Results Analysis  
+The amino acid sequences in 300 to 322 positions of the vaginolysin protein in *Garnderella* strains ATCC14018, ATCC14019, and 409-05 are identical with the exception of position 316, which has a D in strain 409-05 and a E in both ATCC strains. This suggests that the vaginolysin protein from all 3 strains at this active site are similar to each other. The protein homology model of ATCC14018 and ATCC14019 shared 59.45% sequence identity with intermedilysin (ily), while strain 409-05 only shared 59.32% sequence identity. The normal modes analysis revealed a large fluctuation in protein flexibility between amino acid sequence positions 400 and 500; however, there was not much fluctuation around 300 and 322 between strains ATCC14018/ATCC14019 and 409-05, which was inferred to be the site of interaction with the human CD59 receptor. This disproves my hypothesis that there are major structural and functional differences between the strains of *Gardnerella vaginalis* from women with symptomatic and asymptomatic bacterial vaginosis. One caveat to consider is that due to the poor annotation of this protein, there is a possiblity that the site I selected to look into was not actually the active site. Futher studies should look into the amino acid sequence similarities between the 400 and 500 amino acid positions of the aligned vaginolysin proteins. 
